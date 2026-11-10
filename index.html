@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoneyBuddies – track your chit fund</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1d2b36;
+    --muted: #4a5a66;
+    --cream: #fbf6ee;
+    --teal: #0f6e66;
+    --teal-dark: #0a4f49;
+    --teal-soft: #dff1ee;
+    --sun: #ffd166;
+    --sun-soft: #fff4d6;
+    --coral: #b23a26;
+    --line: #e4dccf;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  [hidden] { display: none !important; }
+  body {
+    font-family: "Nunito", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink);
+    /* Soft colour glows + a light dot pattern. No images, so it stays light. */
+    background:
+      radial-gradient(circle at 90% 5%, rgba(255,209,102,.45), transparent 35%),
+      radial-gradient(circle at 0% 45%, rgba(15,110,102,.14), transparent 40%),
+      radial-gradient(circle at 100% 85%, rgba(232,96,76,.12), transparent 35%),
+      radial-gradient(rgba(29,43,54,.07) 1.5px, transparent 1.5px) 0 0 / 22px 22px,
+      var(--cream);
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 18px; }
+  a { color: inherit; }
+
+  /* Top bar */
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 18px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 900; letter-spacing: -.5px; margin: 0; color: var(--teal-dark); }
+  .coin {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--sun); color: var(--teal-dark);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 900; box-shadow: inset 0 -3px 0 rgba(0,0,0,.15);
+  }
+  .proto {
+    background: #fff; border: 2px dashed var(--teal);
+    color: var(--teal-dark); padding: 4px 12px; border-radius: 999px; font-size: 16px;
+  }
+
+  /* Hero: text + phone side by side on wide screens, stacked on phones */
+  .hero { display: grid; gap: 28px; align-items: center; padding: 12px 0 40px; }
+  .kicker {
+    display: inline-block; font-size: 16px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase;
+    background: var(--teal-soft); color: var(--teal-dark); padding: 4px 12px; border-radius: 999px; margin: 0 0 12px;
+  }
+  h1 { font-size: 38px; font-weight: 900; line-height: 1.1; letter-spacing: -1px; margin: 0 0 14px; }
+  h1 .hl { background: linear-gradient(transparent 60%, var(--sun) 60%); padding: 0 4px; }
+  .lead { font-size: 21px; color: var(--muted); margin: 0 0 22px; max-width: 34ch; }
+
+  .btn {
+    display: inline-block; text-align: center; text-decoration: none;
+    font-size: 21px; font-weight: 900;
+    padding: 15px 24px; min-height: 58px; border-radius: 16px;
+  }
+  .btn.primary { background: var(--teal); color: #fff; box-shadow: 0 5px 0 var(--teal-dark); }
+  .btn.secondary { background: var(--sun); color: var(--ink); box-shadow: 0 5px 0 #d9a935; }
+  .btn:active { transform: translateY(3px); box-shadow: none; }
+  .btn:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .hint { font-size: 17px; color: var(--muted); margin: 10px 0 0; }
+
+  /* Phone picture of the app */
+  .phone {
+    position: relative; justify-self: center;
+    width: 100%; max-width: 330px;
+    background: #fff; border: 10px solid var(--ink); border-radius: 36px;
+    padding: 18px 16px 22px;
+    box-shadow: 0 24px 50px rgba(29,43,54,.18);
+  }
+  .phone::before { content: ""; display: block; width: 70px; height: 6px; border-radius: 3px; background: var(--line); margin: 0 auto 14px; }
+  .phone .tag { font-size: 14px; color: var(--muted); margin: 0 0 6px; }
+  .phone .big { font-size: 26px; font-weight: 900; margin: 0; line-height: 1.2; }
+  .phone .owe { font-size: 18px; margin: 6px 0 12px; }
+  .phone .owe b { color: var(--coral); }
+  .phone .turn { background: var(--sun-soft); border: 3px solid var(--sun); border-radius: 14px; padding: 10px 12px; margin: 0 0 12px; font-size: 18px; }
+  .phone .turn strong { display: block; font-size: 26px; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 2px solid #f1ebe0; font-size: 18px; }
+  .dot { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-weight: 900; font-size: 15px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .ok { margin-left: auto; color: var(--teal-dark); font-weight: 800; font-size: 16px; }
+  .no { margin-left: auto; color: var(--coral); font-weight: 800; font-size: 16px; }
+  .late { margin-left: auto; color: #7a5300; font-weight: 800; font-size: 16px; }
+  .float-coin {
+    position: absolute; right: -18px; top: -18px;
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--sun); border: 4px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: var(--teal-dark);
+    box-shadow: 0 8px 18px rgba(0,0,0,.15);
+  }
+
+  /* How it works */
+  .how { padding: 20px 0 10px; }
+  .how-head { text-align: center; margin-bottom: 22px; }
+  h2 { font-size: 30px; font-weight: 900; line-height: 1.15; margin: 0; letter-spacing: -.5px; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  .steps li {
+    position: relative; background: #fff; border-radius: 20px;
+    padding: 56px 20px 20px; box-shadow: 0 2px 0 var(--line), 0 8px 20px rgba(29,43,54,.06);
+  }
+  .steps .num {
+    position: absolute; top: -18px; left: 20px;
+    width: 56px; height: 56px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: #fff; background: var(--teal);
+    transform: rotate(-6deg);
+  }
+  .steps li:nth-child(2) .num { background: var(--coral); transform: rotate(5deg); }
+  .steps li:nth-child(3) .num { background: var(--sun); color: var(--ink); transform: rotate(-3deg); }
+  .steps strong { display: block; font-size: 23px; font-weight: 900; margin-bottom: 4px; }
+  .steps li { margin-top: 18px; }
+
+  /* Full-width band */
+  .band { background: var(--teal); color: #fff; margin: 40px 0; padding: 30px 0; transform: skewY(-2deg); }
+  .band p { transform: skewY(2deg); margin: 0; font-size: 22px; font-weight: 800; text-align: center; }
+  .band span { color: var(--sun); }
+
+  /* Call to action */
+  .cta {
+    display: grid; gap: 16px; align-items: center;
+    background: var(--sun-soft); border: 3px solid var(--sun); border-radius: 24px;
+    padding: 24px; margin-bottom: 32px;
+  }
+  .cta p { margin: 6px 0 0; color: var(--muted); }
+  .cta .btn { width: 100%; border: 0; cursor: pointer; font-family: inherit; }
+  #signup { margin-top: 4px; }
+  #signup label { display: block; font-weight: 900; margin-bottom: 6px; }
+  #signup input {
+    width: 100%; font: inherit; font-size: 20px;
+    padding: 14px 16px; min-height: 58px;
+    border: 3px solid var(--line); border-radius: 14px; background: #fff;
+  }
+  #signup input:focus { outline: none; border-color: var(--teal); }
+  #signup .btn { margin-top: 12px; }
+  .error { color: var(--coral); font-weight: 800; font-size: 17px; margin: 8px 0 0; }
+  .small-note { font-size: 16px; color: var(--muted); margin: 10px 0 0; }
+  .thanks { background: var(--teal-soft); border-left: 8px solid var(--teal); border-radius: 14px; padding: 14px 16px; margin: 0; font-weight: 800; }
+
+  footer { font-size: 17px; color: var(--muted); border-top: 2px solid var(--line); padding: 14px 0 28px; }
+
+  /* Phones: buttons fill the width so they are easy to tap */
+  @media (max-width: 599px) {
+    .hero .btn { display: block; }
+  }
+
+  /* Tablets and computers: use the space */
+  @media (min-width: 820px) {
+    h1 { font-size: 56px; }
+    h2 { font-size: 38px; }
+    .hero { grid-template-columns: 1.15fr .85fr; gap: 48px; padding: 30px 0 60px; }
+    .phone { transform: rotate(3deg); }
+    .steps { grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .steps li:nth-child(2) { margin-top: 48px; }
+    .steps li:nth-child(3) { margin-top: 78px; }
+    .cta { grid-template-columns: 1.4fr 1fr; padding: 32px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="nav">
+    <p class="brand"><span class="coin" aria-hidden="true">€</span>MoneyBuddies</p>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="kicker">For chit funds and savings circles</p>
+      <h1>See who has paid into the pot <span class="hl">on time</span>, without chasing anyone.</h1>
+      <p class="lead">Everyone pays into one pot each month. At the end of the month, one member gets the full pot. MoneyBuddies shows who paid on time, who is late, and whose turn is next.</p>
+    </div>
+
+    <!-- Picture of the app with invented names -->
+    <div class="phone" aria-label="Example of the MoneyBuddies screen with invented names">
+      <span class="float-coin" aria-hidden="true">€</span>
+      <p class="tag">Example · invented names</p>
+      <p class="big">6 of 10 paid into the pot</p>
+      <p class="owe"><b>Still to pay:</b> Aoife, Ana, Fatima, Dermot</p>
+      <p class="turn">End of month, the €1,000 pot goes to <strong>Aoife</strong></p>
+      <div class="row"><span class="dot" style="background:#5b6ee1">T</span>Tomasz<span class="ok">✓ On time</span></div>
+      <div class="row"><span class="dot" style="background:#b5581b">A</span>Aoife<span class="no">Not paid yet</span></div>
+      <div class="row"><span class="dot" style="background:#0f6e66">C</span>Ciarán<span class="late">Paid late</span></div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="how-head">
+      <p class="kicker">How it works</p>
+      <h2>How a month works</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="num">1</span><strong>Everyone pays in</strong>Each member pays the same amount into the pot by the due date. The organiser collects it.</li>
+      <li><span class="num">2</span><strong>Track who paid on time</strong>The organiser taps "Mark as paid". Everyone can see who paid on time, who is late and who has not paid yet.</li>
+      <li><span class="num">3</span><strong>One member gets the pot</strong>At the end of the month, the full pot goes to the member whose turn it is. Next month, it is someone else's turn.</li>
+    </ol>
+  </section>
+</div>
+
+<div class="band">
+  <p>The organiser collects the money, as now. <span>MoneyBuddies keeps a clear record</span> that the whole group can see.</p>
+</div>
+
+<div class="wrap">
+  <section class="cta">
+    <div>
+      <h2>Want to try it with your chit fund?</h2>
+      <p>This is where you would leave your email to hear about the first test.</p>
+    </div>
+    <div>
+      <button class="btn secondary" id="openForm" type="button" aria-expanded="false" aria-controls="signup">Tell us about your chit fund</button>
+
+      <!-- Prototype only: this email box shows the idea. Nothing is sent or saved. -->
+      <form id="signup" hidden novalidate>
+        <label for="email">Your email address</label>
+        <input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+        <p id="error" class="error" hidden role="alert"></p>
+        <button class="btn primary" type="submit">Send</button>
+        <p class="small-note">Prototype: emails are not saved yet.</p>
+      </form>
+      <p id="thanks" class="thanks" hidden role="status"></p>
+    </div>
+  </section>
+
+  <footer>
+    <p>MoneyBuddies is a prototype with invented data. It is not a bank. Please do not enter real payment details.</p>
+  </footer>
+</div>
+
+<script>
+  var openBtn = document.getElementById("openForm");
+  var form = document.getElementById("signup");
+  var thanks = document.getElementById("thanks");
+
+  // Step 1: tapping the button shows the email box.
+  openBtn.addEventListener("click", function () {
+    openBtn.hidden = true;
+    openBtn.setAttribute("aria-expanded", "true");
+    form.hidden = false;
+    document.getElementById("email").focus();
+  });
+
+  // Step 2: check the email, then say thank you on the same page.
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = document.getElementById("email");
+    var error = document.getElementById("error");
+    if (!email.value || !email.checkValidity()) {
+      error.textContent = "Please type a full email address, like name@example.com.";
+      error.hidden = false;
+      email.focus();
+      return;
+    }
+    error.hidden = true;
+    form.hidden = true;
+    thanks.textContent = "Thank you! This is a prototype, so your email was not saved. In the real app, we would contact you about the first test.";
+    thanks.hidden = false;
+  });
+</script>
+</body>
+</html>
